@@ -12,5 +12,27 @@
 */
 
 Route::get('/', function () {
+	
     return view('welcome');
+});
+
+Route::get('productsUpload', function (App\Product $product) {
+	//$product = new Product;
+	$product->supplierId = '1';
+	$product->prouctName = 'Product One';
+	$product->productPrice = '100';
+	$product->productInventory = '10';
+	$product->productImage = 'productImage.png';
+	$product->save();
+    return 'Products uploaded successfully';
+});
+
+Route::get('print', function () {
+	DB::table('products')->orderBy('id')->chunk(100, function ($products) {
+	    foreach ($products as $product) {
+	        echo $product->id;
+	        var_dump($product);
+	    }
+	});
+    
 });
