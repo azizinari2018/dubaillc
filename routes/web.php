@@ -16,6 +16,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('new', function () {
+	//echo asset('');
+    return view('index');
+});
+
 Route::get('productsUpload', function (App\Product $product) {
 	//$product = new Product;
 	$product->supplierId = '1';
