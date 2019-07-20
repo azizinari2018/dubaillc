@@ -11,10 +11,12 @@
 |
 */
 
-Route::get('/', function () {
+// Route::get('/', function () {
 	
-    return view('welcome');
-});
+//     return view('welcome');
+// });
+
+Route::get('/', 'Products@index');
 
 Route::get('new', function () {
 	//echo asset('');
@@ -41,3 +43,7 @@ Route::get('print', function () {
 	});
     
 });
+
+Route::get('addToCart/{prductId}','CartController@addProductToCart');
+Route::get('cart','CartController@showCart');
+
