@@ -69,11 +69,13 @@
             <!-- Amado Nav -->
             <nav class="amado-nav">
                 <ul>
-                    <li class="active"><a href="index.html">Home</a></li>
-                    <li><a href="shop.html">Shop</a></li>
-                    <li><a href="product-details.html">Product</a></li>
-                    <li><a href="cart.html">Cart</a></li>
-                    <li><a href="checkout.html">Checkout</a></li>
+                    <li class="@if($page == 'home') active @endif"><a href="{{url('')}}">Home</a></li>
+                    <li class="@if($page == 'cart') active @endif"><a href="{{url('cart')}}">Cart</a></li>
+                    @if (Session::get('user_id')) 
+                        <li class=""><a href="{{url('logout')}}">Logout</a></li>
+                    @else
+                        <li class=""><a data-toggle="modal" data-target="#loginModal">Login</a></li>
+                    @endif
                 </ul>
             </nav>
             <!-- Button Group -->
@@ -83,7 +85,7 @@
             </div>
             <!-- Cart Menu -->
             <div class="cart-fav-search mb-100">
-                <a href="cart.html" class="cart-nav"><img src="img/core-img/cart.png" alt=""> Cart <span>(0)</span></a>
+                <a href="{{url('cart')}}" class="cart-nav"><img src="img/core-img/cart.png" alt=""> Cart <span>({{ $cartCount }})</span></a>
                 <a href="#" class="fav-nav"><img src="img/core-img/favorites.png" alt=""> Favourite</a>
                 <a href="#" class="search-nav"><img src="img/core-img/search.png" alt=""> Search</a>
             </div>
@@ -151,21 +153,13 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script>
                                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#footerNavContent" aria-controls="footerNavContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
                                 <div class="collapse navbar-collapse" id="footerNavContent">
                                     <ul class="navbar-nav ml-auto">
-                                        <li class="nav-item active">
-                                            <a class="nav-link" href="index.html">Home</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="shop.html">Shop</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="product-details.html">Product</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="cart.html">Cart</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="checkout.html">Checkout</a>
-                                        </li>
+                                        <li class="nav-item @if($page == 'home') active @endif"><a class="nav-link" href="{{url('')}}">Home</a></li>
+                                        <li class="nav-item @if($page == 'cart') active @endif"><a class="nav-link" href="{{url('cart')}}">Cart</a></li>
+                                        @if (Session::get('user_id')) 
+                                            <li class="nav-item"><a class="nav-link" href="{{url('logout')}}">Logout</a></li>
+                                        @else
+                                            <li class="nav-item"><a class="nav-link" data-toggle="modal" data-target="#loginModal">Login</a></li>
+                                        @endif
                                     </ul>
                                 </div>
                             </nav>
@@ -176,6 +170,41 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script>
         </div>
     </footer>
     <!-- ##### Footer Area End ##### -->
+    <!-- Login Modal Start Here -->
+        <!-- Modal -->
+        <div id="loginModal" class="modal fade" role="dialog">
+          <div class="modal-dialog modal-sm">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-body">
+                <div class="cart-summary">
+                    <h5>LOGIN</h5>
+                    <div class="alert alert-danger" id="loginError" style="display: none">
+                        Email or Password is wrong.
+                    </div>
+                    <form action="" method="post" name="loginForm" id="loginForm">
+                        <input type="hidden" name="_token" id="csrf-token" value="{{ Session::token() }}" />
+                        <div class="form-group" style="margin-top: 30px">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" required name="loginEmail" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required name="loginPassword" class="form-control">
+                        </div>
+                    
+                    <div class="cart-btn ">
+                        <button type="submit"  class="btn amado-btn w-100">Login</button>
+                    </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+            <!-- Login Modal End Here -->
 
     <!-- ##### jQuery (Necessary for All JavaScript Plugins) ##### -->
     <script src="js/website/js/jquery/jquery-2.2.4.min.js"></script>
@@ -187,6 +216,30 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script>
     <script src="js/website/js/plugins.js"></script>
     <!-- Active js -->
     <script src="js/website/js/active.js"></script>
+
+    <script>
+        $('#loginForm').on('submit', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "{{route('login')}}" ,
+                data: $('#loginForm').serialize(),
+                method:'post',
+                // dataType:'json',
+                success:function(data){
+                    console.log(data);
+                    if(data == 'success'){
+                        location.reload();
+                    }
+                    else{
+                        $('#loginError').show();
+                    }
+                    
+                }
+
+            });
+        });
+
+    </script>
 
 </body>
 
